@@ -3,18 +3,15 @@ use std::fs;
 fn main() {
     // Read input and parse to string
     let input_path = "input.txt";
-    let mut data = fs::read_to_string(input_path).expect("Unable to read file");
+    let data = fs::read_to_string(input_path).expect("Unable to read file");
 
-    // trim data
-    data = data.trim().to_string();
-    let split = data.split("\n");
-    let output: Vec<&str> = split.collect();
+    let data = data.trim();
+    let output: Vec<&str> = data.lines().collect();
 
-    part_one(&output);
+    solve(&output);
 }
 
-fn part_one(output: &Vec<&str>) {
-    // println!("Part One: {:?}", output);
+fn solve(output: &Vec<&str>) {
     let mut fully_overlaps = 0;
     let mut overlaps = 0;
 
@@ -42,15 +39,9 @@ fn part_one(output: &Vec<&str>) {
         if (elf_1_start <= elf_2_start && elf_1_end >= elf_2_start)
             || (elf_2_start <= elf_1_start && elf_2_end >= elf_1_start)
         {
-            // println!(
-            //     "-----\nelf_1: {}, {} \nelf_2: {}, {}",
-            //     elf_1_start, elf_1_end, elf_2_start, elf_2_end
-            // );
             overlaps += 1;
         }
     }
     println!("Fully Overlaps: {}", fully_overlaps);
     println!("Overlaps: {}", overlaps);
 }
-
-// 719 too low
