@@ -45,3 +45,16 @@ fn solve(output: &Vec<&str>) {
     println!("Fully Overlaps: {}", fully_overlaps);
     println!("Overlaps: {}", overlaps);
 }
+
+// let cur = data[c];
+// if marker.contains(&cur) {
+//     counter = 0;
+//     continue;
+// } else {
+//     counter += 1;
+//     if counter == 4 {
+//         println!("unique sequence: {:?}", &data[c - 3..c + 1]);
+//         println!("solution: {:?}", c);
+//         break;
+//     }
+// }
