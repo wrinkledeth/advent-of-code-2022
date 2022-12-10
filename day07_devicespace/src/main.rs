@@ -46,7 +46,7 @@ fn solve(output: &Vec<&str>) {
 
     // Part 1
     let mut answer = 0;
-    for (dir, size) in size_map.iter() {
+    for (_dir, size) in size_map.iter() {
         if *size <= 100_000 {
             answer += *size;
         }
@@ -59,21 +59,22 @@ fn solve(output: &Vec<&str>) {
     let space_used = size_map.get("/").unwrap();
     let to_delete = space_used - install_size;
 
+    // get candidates with size > to_delete
     let candidates = size_map
         .iter()
-        .filter(|(dir, size)| **size > to_delete)
+        .filter(|(_dir, size)| **size > to_delete)
         .collect::<Vec<(&String, &i32)>>();
 
-    println!("Candidates: {:?}", candidates);
+    // println!("Candidates: {:?}", candidates);
 
     // get candidate with minimum size
-    let targe_folder = candidates
+    let target_folder = candidates
         .iter()
-        .min_by_key(|(dir, size)| **size)
+        .min_by_key(|(_dir, size)| **size)
         .unwrap()
         .1;
 
-    println!("Answer Part 2: {}", targe_folder);
+    println!("Answer Part 2: {}", target_folder);
 }
 
 fn is_string_numeric(input_string: String) -> bool {
