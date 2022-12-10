@@ -51,6 +51,9 @@ fn solve(rows: &Vec<Vec<i32>>, cols: &Vec<Vec<i32>>) {
     let mut visible_coordinates_top: Vec<Vec<i32>> = Vec::new();
     let mut visible_coordinates_bottom: Vec<Vec<i32>> = Vec::new();
 
+    let row_len = rows.len();
+    let col_len = cols.len();
+
     println!("\nEdge Coords");
     // * populate visible coordinates with edges
     for (x, row) in rows.iter().enumerate() {
@@ -69,25 +72,55 @@ fn solve(rows: &Vec<Vec<i32>>, cols: &Vec<Vec<i32>>) {
         let tallest = row.iter().max().unwrap();
 
         // * visible from the left
-        let mut visible_left: Vec<i32> = Vec::new();
+        // let mut visible_left: Vec<i32> = Vec::new();
+        let mut seen: Vec<i32> = Vec::new();
         for (x, height) in row.iter().enumerate() {
-            if height == tallest {
-                visible_left = vec![y as i32, x as i32, *tallest];
-                break;
+            for item in seen.clone() {
+                if height <= &item {
+                    break;
+                } else {
+                    // visible_left = vec![y as i32, x as i32, *tallest];
+                    visible_coordinates.insert(vec![y as i32, x as i32, *tallest]);
+                    seen.push(*height)
+                }
             }
+            // if height > all seen:
+            // visible_left push coords
+            // seen.push height
+
+            // if height == tallest {
+            //     visible_left = vec![y as i32, x as i32, *tallest];
+            //     break;
+            // }
         }
-        visible_coordinates.insert(visible_left.clone());
-        visible_coordinates_left.push(visible_left.clone());
+        // visible_coordinates.insert(visible_left.clone());
+        // visible_coordinates_left.push(visible_left.clone());
 
         // * visible from the right
-        let mut visible_right: Vec<i32> = Vec::new();
-        for (x, height) in row.iter().enumerate() {
-            if height == tallest {
-                visible_right = vec![y as i32, x as i32, *tallest];
+        // let mut visible_left: Vec<i32> = Vec::new();
+        let mut seen: Vec<i32> = Vec::new();
+        for (x, height) in row.iter().rev().enumerate() {
+            for item in seen.clone() {
+                if height <= &item {
+                    break;
+                } else {
+                    // visible_left = vec![y as i32, x as i32, *tallest];
+                    let x_coord = row_len - x;
+                    visible_coordinates.insert(vec![y as i32, x_coord as i32, *tallest]);
+                    seen.push(*height)
+                }
             }
         }
-        visible_coordinates.insert(visible_right.clone());
-        visible_coordinates_right.push(visible_right.clone());
+
+        // // * visible from the right
+        // let mut visible_right: Vec<i32> = Vec::new();
+        // for (x, height) in row.iter().enumerate() {
+        //     if height == tallest {
+        //         visible_right = vec![y as i32, x as i32, *tallest];
+        //     }
+        // }
+        // visible_coordinates.insert(visible_right.clone());
+        // visible_coordinates_right.push(visible_right.clone());
     }
 
     for (x, col) in cols.iter().enumerate() {
