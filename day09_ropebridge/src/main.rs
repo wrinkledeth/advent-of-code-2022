@@ -25,11 +25,14 @@ fn main() {
 
 fn solve2(move_list: &Vec<(&str, i32)>) {
     let mut head: (i32, i32) = (0, 0);
-    let mut tail: (i32, i32) = (0, 0);
+    // let mut tail: (i32, i32) = (0, 0);
+    // create 10 tail nodes
+    let mut tail_nodes: Vec<(i32, i32)> = Vec::new();
+    for _ in 0..10 {
+        tail_nodes.push((0, 0));
+    }
 
     let mut seen: HashSet<(i32, i32)> = HashSet::new();
-
-    // println!("Moves {:?}", move_list);
 
     for moves in move_list.iter() {
         // println!("\n== {} {} ==", moves.0, moves.1);
@@ -44,28 +47,37 @@ fn solve2(move_list: &Vec<(&str, i32)>) {
         }
 
         for _ in 0..moves.1 {
-            // move head
-            head = (head.0 + movement_vec.0, head.1 + movement_vec.1);
+            for i in 0..tail_nodes.len() {
+                // move head
+                head = (head.0 + movement_vec.0, head.1 + movement_vec.1);
 
-            let knight_jump: bool = (head.0 - tail.0).abs() == 2 && (head.1 - tail.1).abs() == 1
-                || (head.0 - tail.0).abs() == 1 && (head.1 - tail.1).abs() == 2;
+                let knight_jump: bool = (head.0 - tail_nodes[i].0).abs() == 2
+                    && (head.1 - tail_nodes[i].1).abs() == 1
+                    || (head.0 - tail_nodes[i].0).abs() == 1
+                        && (head.1 - tail_nodes[i].1).abs() == 2;
 
-            let cardinal_jump: bool = (head.0 - tail.0).abs() == 2 && (head.1 - tail.1).abs() == 0
-                || (head.0 - tail.0).abs() == 0 && (head.1 - tail.1).abs() == 2;
+                let cardinal_jump: bool = (head.0 - tail_nodes[i].0).abs() == 2
+                    && (head.1 - tail_nodes[i].1).abs() == 0
+                    || (head.0 - tail_nodes[i].0).abs() == 0
+                        && (head.1 - tail_nodes[i].1).abs() == 2;
 
-            if cardinal_jump {
-                tail = (tail.0 + movement_vec.0, tail.1 + movement_vec.1);
-            } else if knight_jump {
-                match moves.0 {
-                    "R" => tail = (tail.0 + 1, head.1),
-                    "U" => tail = (head.0, tail.1 + 1),
-                    "L" => tail = (tail.0 - 1, head.1),
-                    "D" => tail = (head.0, tail.1 - 1),
-                    _ => println!("Unknown direction"),
+                if cardinal_jump {
+                    tail_nodes[i] = (
+                        tail_nodes[i].0 + movement_vec.0,
+                        tail_nodes[i].1 + movement_vec.1,
+                    );
+                } else if knight_jump {
+                    match moves.0 {
+                        "R" => tail_nodes[i] = (tail_nodes[i].0 + 1, head.1),
+                        "U" => tail_nodes[i] = (head.0, tail_nodes[i].1 + 1),
+                        "L" => tail_nodes[i] = (tail_nodes[i].0 - 1, head.1),
+                        "D" => tail_nodes[i] = (head.0, tail_nodes[i].1 - 1),
+                        _ => println!("Unknown direction"),
+                    }
                 }
+                // println!("head: {:?}, tail: {:?}", head, tail);
+                seen.insert(tail_nodes[i]);
             }
-            // println!("head: {:?}, tail: {:?}", head, tail);
-            seen.insert(tail);
         }
     }
     // println!("Seen\n{:?}", seen);
@@ -119,10 +131,26 @@ fn solve1(move_list: &Vec<(&str, i32)>) {
     }
     // println!("Seen\n{:?}", seen);
     println!("Answer1: {}", seen.len());
-}
 
-// compute new orientation
-// let overlap: bool = head == tail;
-// let cardinal: bool = (head.1 == tail.1) && ((head.0 - tail.0).abs() == 1)
-//     || (head.0 == tail.0) && ((head.1 - tail.1).abs() == 1);
-// let diagonal: bool = (head.0 - tail.0).abs() == 1 && (head.1 - tail.1).abs() == 1;
+    // print seen on a 2d grid, markned by #
+    let mut grid: Vec<Vec<char>> = Vec::new();
+    for i in 0..10 {
+        let mut row: Vec<char> = Vec::new();
+        for j in 0..10 {
+            if seen.contains(&(i, j)) {
+                row.push('#');
+            } else {
+                row.push('.');
+            }
+        }
+        grid.push(row);
+    }
+
+    // // print transposed grid
+    // for i in (0..10).rev() {
+    //     for j in 0..10 {
+    //         print!("{}", &grid[j][i]);
+    //     }
+    //     println!("");
+    // }
+}
